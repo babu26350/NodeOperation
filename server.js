@@ -32,10 +32,22 @@ app.get('/users', (req, res) => {
     if (result.length === 0) {
       return res.status(404).json({ message: 'No records found in my_table' });
     }
-
+ 
     res.json(result);
   });
 });
+
+
+const alterSr = "ALTER TABLE your_table_name MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
+ db.query(alterSr, (err, results) => {
+    if (err) {
+      console.error("Error modifying Sr column:", err);
+    } else {
+      console.log("Sr column modified successfully.");
+    }
+  });
+  
+
 app.post('/users', (req, res) => {
   const { Name, Age } = req.body;
 console.log(Name)
