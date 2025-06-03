@@ -92,7 +92,7 @@ console.log('done')
     return res.status(400).json({ error: 'Name and Age are required' });
   }
 
-  const sql = 'UPDATE my_table SET Name = ?, Age = ? WHERE sr = ?';
+  const sql = 'UPDATE my_table SET Name = ?, Age = ? WHERE Sr = ?';
   db.query(sql, [Name, Age, id], (err, result) => {
     if (err) {
       console.error('Error updating user:', err.message);
@@ -112,7 +112,7 @@ console.log('done')
 app.delete('/users/:id', (req, res) => {
   const { id } = req.params;
 
-  const sql = 'DELETE FROM my_table WHERE sr = ?';
+  const sql = 'DELETE FROM my_table WHERE Sr = ?';
   db.query(sql, [id], (err, result) => {
     if (err) {
       console.error('Error deleting user:', err.message);
