@@ -142,9 +142,10 @@
     async function fetchUsers() {
       const res = await fetch('/users');
       const users = await res.json();
+     
       const tbody = document.querySelector('#userTable tbody');
       tbody.innerHTML = '';
-
+console.log(users)
       if (Array.isArray(users)) {
         users.forEach(user => {
           const row = document.createElement('tr');

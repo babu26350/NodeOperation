@@ -39,16 +39,30 @@ app.get('/users', (req, res) => {
 
 
 app.get('/users1', (req, res) => {
-  const alterSr = "ALTER TABLE my_table MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
+  // const alterSr = "ALTER TABLE my_table MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
 
-  db.query(alterSr, (err, results) => {
+  // db.query(alterSr, (err, results) => {
+  //   if (err) {
+  //     console.error("Error modifying Sr column:", err);
+  //     res.status(500).send({ error: 'Failed to modify Sr column', details: err });
+  //   } else {
+  //     console.log("Sr column modified successfully.");
+  //     res.send({ message: "Sr column modified successfully." });
+  //   }
+  // });
+   const sql = 'SELECT * FROM my_table';
+
+  db.query(sql, (err, result) => { 
     if (err) {
-      console.error("Error modifying Sr column:", err);
-      res.status(500).send({ error: 'Failed to modify Sr column', details: err });
-    } else {
-      console.log("Sr column modified successfully.");
-      res.send({ message: "Sr column modified successfully." });
+      console.error('Error fetching data from my_table:', err.message);
+      return res.status(500).json({ error: 'Database error: ' + err.message });
     }
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No records found in my_table' });
+    }
+ 
+    res.json(result);
   });
 });
   
