@@ -38,14 +38,19 @@ app.get('/users', (req, res) => {
 });
 
 
-const alterSr = "ALTER TABLE your_table_name MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
- db.query(alterSr, (err, results) => {
+app.get('/users1', (req, res) => {
+  const alterSr = "ALTER TABLE my_table MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
+
+  db.query(alterSr, (err, results) => {
     if (err) {
       console.error("Error modifying Sr column:", err);
+      res.status(500).send({ error: 'Failed to modify Sr column', details: err });
     } else {
       console.log("Sr column modified successfully.");
+      res.send({ message: "Sr column modified successfully." });
     }
   });
+});
   
 
 app.post('/users', (req, res) => {
