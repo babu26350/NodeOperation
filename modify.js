@@ -1,13 +1,13 @@
 import mysql from 'mysql2';
-
+import db from './db.js';
 // Database connection setup
-const db = mysql.createConnection({
-  host: "mysql-production-dc95.up.railway.app",  // apna host yahan daalo
-  port: 3306,
-  user: "root",                                  // apna user yahan daalo
-  password: "hFxQGDypVhtzFLcPMJGnVgiIstIudTIN",// apna password yahan daalo
-  database: "railway",                           // apna database name yahan daalo
-});
+// const db = mysql.createConnection({
+//   host: "mysql-production-dc95.up.railway.app",  // apna host yahan daalo
+//   port: 3306,
+//   user: "root",                                  // apna user yahan daalo
+//   password: "hFxQGDypVhtzFLcPMJGnVgiIstIudTIN",// apna password yahan daalo
+//   database: "railway",                           // apna database name yahan daalo
+// });
 
 db.connect((err) => {
   if (err) {
