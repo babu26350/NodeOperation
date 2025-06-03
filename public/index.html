@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      /* margin-bottom: 10px; */
+    }
+
+    button {
+      padding: 8px 16px;
+      margin: 25px; 
+      border: none;
+      border-radius: 4px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    #responseMsg {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #updateModal {
+      display: none;
+      position: fixed;
+      top: 25%;
+      left: 50%;
+      transform: translate(-50%, -25%);
+      background: #fff;
+      border: 2px solid #444;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      min-width: 300px;
+    }
+
+    #updateModal input[type="text"],
+    #updateModal input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    #updateModal button {
+      margin-right: 10px;
+    }
+    .responsive {
+      max-height: 75vh;
+      overflow-y: scroll;
+  max-width: 1200px;      /* Set your desired max width */
+  margin: 0px auto;     /* Top-bottom 40px, left-right auto for centering */
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%;           /* Full width for smaller screens */
+  box-sizing: border-box;
+}
+#set{text-align: right;}
+.header{background-color: #e2dada;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>User List</h2>
+     <a href="add.html"><button>Add New User</button></a>
+  </div>
+  <div class="responsive"> 
+ 
+ 
+  <p id="responseMsg"></p>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Popup form for update -->
+  <div id="updateModal">
+    <h3>Update User</h3>
+    <form id="updateForm">
+      <input type="hidden" id="updateId">
+      <label>Name:</label>
+      <input type="text" id="updateName" required>
+
+      <label>Age:</label>
+      <input type="number" id="updateAge" required>
+
+      <button type="submit">Update</button>
+      <button type="button" onclick="closeModal()" style="background-color: #6c757d;">Cancel</button>
+    </form>
+  </div>
+ </div>
+ 
+ </div>
+  <script>
+    async function fetchUsers() {
+      const res = await fetch('/users');
+      const users = await res.json();
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = '';
+
+      if (Array.isArray(users)) {
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${user.sr}</td>
+            <td>${user.Name}</td>
+            <td>${user.Age}</td>
+            <td id='set'>
+              <button onclick="openModal(${user.sr}, '${user.Name}', ${user.Age})">Update</button>
+              <button onclick="deleteUser(${user.sr})" style="background-color: #dc3545;">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    }
+
+    function openModal(id, name, age) {
+      document.getElementById('updateId').value = id;
+      document.getElementById('updateName').value = name;
+      document.getElementById('updateAge').value = age;
+      document.getElementById('updateModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('updateModal').style.display = 'none';
+    }
+
+    document.getElementById('updateForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const id = document.getElementById('updateId').value;
+      const Name = document.getElementById('updateName').value;
+      const Age = document.getElementById('updateAge').value;
+
+      const res = await fetch(`/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ Name, Age })
+      });
+
+      const result = await res.json();
+      alert(result.message || result.error);
+      if (res.ok) {
+        closeModal();
+        fetchUsers();
+      }
+    });
+
+    async function deleteUser(id) {
+      if (!confirm("Delete this user?")) return;
+      const res = await fetch(`/users/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      alert(result.message || result.error);
+      if (res.ok) fetchUsers();
+    }
+
+    window.onload = fetchUsers;
+  </script>
+</body>
+</html>

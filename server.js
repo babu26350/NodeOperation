@@ -1,0 +1,105 @@
+import express from 'express';
+import cors from 'cors';
+import db from './db.js';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(express.static('public'));
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+console.log("server ce")
+
+app.get('/users', (req, res) => {
+
+  const sql = 'SELECT * FROM new_table';
+
+  db.query(sql, (err, result) => { 
+    if (err) {
+      console.error('Error fetching data from new_table:', err.message);
+      return res.status(500).json({ error: 'Database error: ' + err.message });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No records found in new_table' });
+    }
+
+    res.json(result);
+  });
+});
+app.post('/users', (req, res) => {
+  const { Name, Age } = req.body;
+console.log(Name)
+  if (!Name || !Age) {
+    return res.status(400).json({ error: 'Name and Age are required' });
+  }
+
+  const sql = 'INSERT INTO new_table (Name, Age) VALUES (?, ?)';
+  db.query(sql, [Name, Age], (err, result) => {
+    if (err) {
+      console.error('Error inserting data:', err.message);
+      return res.status(500).json({ error: 'Database error: ' + err.message });
+    }
+     res.status(201).json({ message: 'User added successfully', id: result.insertId });
+  });
+  });
+
+app.put('/users/:id', (req, res) => {
+  const { id } = req.params;
+  const { Name, Age } = req.body;
+console.log('done')
+  if (!Name || !Age) {
+    return res.status(400).json({ error: 'Name and Age are required' });
+  }
+
+  const sql = 'UPDATE new_table SET Name = ?, Age = ? WHERE sr = ?';
+  db.query(sql, [Name, Age, id], (err, result) => {
+    if (err) {
+      console.error('Error updating user:', err.message);
+      return res.status(500).json({ error: 'Database error: ' + err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User updated successfully' });
+  });
+});
+// Fallback route for undefined endpoints
+
+
+app.delete('/users/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM new_table WHERE sr = ?';
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error('Error deleting user:', err.message);
+      return res.status(500).json({ error: 'Database error: ' + err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  });
+});
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found11' });
+});
+// Start server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
