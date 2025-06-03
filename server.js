@@ -21,16 +21,16 @@ console.log("server ce")
 
 app.get('/users', (req, res) => {
 
-  const sql = 'SELECT * FROM my_table';
+  const sql = 'SELECT * FROM new_table';
 
   db.query(sql, (err, result) => { 
     if (err) {
-      console.error('Error fetching data from my_table:', err.message);
+      console.error('Error fetching data from new_table:', err.message);
       return res.status(500).json({ error: 'Database error: ' + err.message });
     }
 
     if (result.length === 0) {
-      return res.status(404).json({ message: 'No records found in my_table' });
+      return res.status(404).json({ message: 'No records found in new_table' });
     }
  
     res.json(result);
@@ -55,7 +55,7 @@ console.log(Name)
     return res.status(400).json({ error: 'Name and Age are required' });
   }
 
-  const sql = 'INSERT INTO my_table (Name, Age) VALUES (?, ?)';
+  const sql = 'INSERT INTO new_table (Name, Age) VALUES (?, ?)';
   db.query(sql, [Name, Age], (err, result) => {
     if (err) {
       console.error('Error inserting data:', err.message);
@@ -73,7 +73,7 @@ console.log('done')
     return res.status(400).json({ error: 'Name and Age are required' });
   }
 
-  const sql = 'UPDATE my_table SET Name = ?, Age = ? WHERE sr = ?';
+  const sql = 'UPDATE new_table SET Name = ?, Age = ? WHERE sr = ?';
   db.query(sql, [Name, Age, id], (err, result) => {
     if (err) {
       console.error('Error updating user:', err.message);
@@ -93,7 +93,7 @@ console.log('done')
 app.delete('/users/:id', (req, res) => {
   const { id } = req.params;
 
-  const sql = 'DELETE FROM my_table WHERE sr = ?';
+  const sql = 'DELETE FROM new_table WHERE sr = ?';
   db.query(sql, [id], (err, result) => {
     if (err) {
       console.error('Error deleting user:', err.message);
