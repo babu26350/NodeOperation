@@ -1,14 +1,14 @@
 // const mysql = require('mysql2');
 import mysql from 'mysql2';
 const db = mysql.createConnection({
-  host: '127.0.0.1',
+  
+ host: "yourproject.up.railway.internal", // ✅ Private internal hostname
   port: 3306,
-  user: 'root',
-  password: '12345', // yahan password ho to daalein
-  database: 'student1',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  user: "root",
+  password: "hFxQGDypVhtzFLcPMJGnVgiIstIudTIN",
+  database: "railway",
+
+
 });
 
 db.connect((err) => {
