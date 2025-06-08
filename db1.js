@@ -33,4 +33,4 @@ async function getUserByName(name) {
   }
 }
 
-module.exports = { insertUser, getUserByName };
+export { insertUser, getUserByName };
