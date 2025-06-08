@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import db from './db.js';
-
+import{insertUser, getUserByName } from ("./db1.js");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -36,7 +36,27 @@ app.get('/users', (req, res) => {
     res.json(result);
   });
 });
+app.post("/api/users2", async (req, res) => {
+  try {
+    const result = await insertUser(req.body);
+    res.status(201).json({ message: "User inserted", id: result.insertedId });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to insert user" });
+  }
+});
 
+app.get("/api/users2/:name", async (req, res) => {
+  try {
+    const user = await getUserByName(req.params.name);
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch user" });
+  }
+});
 
 app.get('/users1', (req, res) => {
   // const alterSr = "ALTER TABLE my_table MODIFY COLUMN Sr INT AUTO_INCREMENT PRIMARY KEY;";
