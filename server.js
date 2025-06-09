@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import db from './db.js';
-import{insertUser, getUserByName } from ("./db1.js");
+import {insertUser, getUserByName } from './db1.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
