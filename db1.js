@@ -40,8 +40,8 @@
 // db.js
 import { MongoClient } from 'mongodb';
 
-//const uri = 'mongodb://babulal:667031c0f5706f13c9c89042@ac-0zdxixf-shard-00-00.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-01.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-02.bslfstu.mongodb.net:27017/?ssl=true&replicaSet=atlas-9gamx9-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0';
-const uri = process.env.MONGODB_URI;
+const uri1 = 'mongodb://babulal:667031c0f5706f13c9c89042@ac-0zdxixf-shard-00-00.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-01.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-02.bslfstu.mongodb.net:27017/?ssl=true&replicaSet=atlas-9gamx9-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0';
+const uri = process.env.uri1;
 let db = null;
 const client = new MongoClient(uri);
 
