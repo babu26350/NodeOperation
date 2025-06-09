@@ -192,7 +192,7 @@
     }
   </style>
 </head>
-<body>
+<!-- <body>
   <div class="container">
     <h2>Add New User</h2>
     <a href="index.html"><button type="button">Back to List</button></a>
@@ -234,5 +234,54 @@
       }
     });
   </script>
+</body> -->
+<body>
+  <div class="container">
+    <h2>Add New User</h2>
+    <a href="index.html"><button type="button">Back to List</button></a>
+
+    <form id="userForm">
+      <label>Name:</label>
+      <input type="text" name="name" required>
+
+      <label>Age:</label>
+      <input type="number" name="age" required>
+
+      <!-- 🔒 Hidden secret key field -->
+       <label>key:</label>
+      <input type="text" name="secret">
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <p id="responseMsg"></p>
+  </div>
+
+  <script>
+    document.getElementById('userForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {
+        name: formData.get('name'),
+        age: parseInt(formData.get('age')),
+        secret: formData.get('secret') // ✅ Add the secret key
+      };
+
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      document.getElementById('responseMsg').textContent = result.message || result.error;
+
+      if (res.ok) {
+        this.reset();
+      }
+    });
+  </script>
 </body>
+
 </html>
