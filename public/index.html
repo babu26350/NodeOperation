@@ -99,7 +99,7 @@
     }
   </style>
 </head>
-<body>
+<!-- <body>
   <div class="header">
     <h2>User List</h2>
     <a href="add.html"><button>Add New User</button></a>
@@ -118,10 +118,10 @@
         </tr>
       </thead>
       <tbody></tbody>
-    </table>
+    </table> -->
 
     <!-- Update Modal -->
-    <div id="updateModal">
+    <!-- <div id="updateModal">
       <h3>Update User</h3>
       <form id="updateForm">
         <input type="hidden" id="updateId">
@@ -200,5 +200,155 @@
 
     window.onload = fetchUsers;
   </script>
+</body> -->
+<body>
+
+  <div class="header">
+    <h2>User List</h2>
+    <a href="add.html"><button>Add New User</button></a>
+    <a href="Newadd.html"><button>Go To New Post</button></a>
+  </div>
+
+  <p id="responseMsg"></p>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- Modal Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Update Modal -->
+  <div id="updateModal">
+    <h3>Update User</h3>
+    <form id="updateForm">
+      <input type="hidden" id="updateId" />
+      <label>Name:</label>
+      <input type="text" id="updateName" required />
+      <label>Age:</label>
+      <input type="number" id="updateAge" required />
+      <div style="margin-top: 15px;">
+        <button type="submit">Update</button>
+        <button type="button" onclick="closeModal()" style="background-color: #6c757d;">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+<script>
+  // Show overlay and modal
+  function showModal() {
+    document.getElementById('updateModal').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+  }
+  // Hide overlay and modal
+  function closeModal() {
+    document.getElementById('updateModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  // Ask for secret key
+  function askSecretKey() {
+    return prompt("Please enter the secret key:");
+  }
+
+  async function fetchUsers() {
+    try {
+      const res = await fetch('/api/users');
+      const users = await res.json();
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = '';
+
+      if (Array.isArray(users)) {
+        users.forEach((user, i) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${i + 1}</td>
+            <td>${user.name}</td>
+            <td>${user.age}</td>
+            <td>
+              <button onclick="openModal('${user._id}', '${user.name}', ${user.age})">Update</button>
+              <button onclick="deleteUser('${user._id}')" style="background-color: #dc3545;">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      alert("Failed to fetch users.");
+    }
+  }
+
+  function openModal(id, name, age) {
+    document.getElementById('updateId').value = id;
+    document.getElementById('updateName').value = name;
+    document.getElementById('updateAge').value = age;
+    showModal();
+  }
+
+  document.getElementById('updateForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const secret = askSecretKey();
+    if (!secret) {
+      alert("Secret key is required to update user.");
+      return;
+    }
+
+    const id = document.getElementById('updateId').value;
+    const name = document.getElementById('updateName').value;
+    const age = parseInt(document.getElementById('updateAge').value);
+
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, age, secret })
+      });
+
+      const result = await res.json();
+      alert(result.message || result.error);
+      if (res.ok) {
+        closeModal();
+        fetchUsers();
+      }
+    } catch {
+      alert("Failed to update user.");
+    }
+  });
+
+  async function deleteUser(id) {
+    if (!confirm("Delete this user?")) return;
+
+    const secret = askSecretKey();
+    if (!secret) {
+      alert("Secret key is required to delete user.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-secret-key': secret }
+      });
+
+      const result = await res.json();
+      alert(result.message || result.error);
+      if (res.ok) fetchUsers();
+    } catch {
+      alert("Failed to delete user.");
+    }
+  }
+
+  window.onload = fetchUsers;
+</script>
+
 </body>
 </html>

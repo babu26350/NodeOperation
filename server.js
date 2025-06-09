@@ -274,9 +274,49 @@ app.get('/api/users/:name', async (req, res) => {
 //   }
 // });
 // Update (PUT)
+// app.put('/api/users/:id', async (req, res) => {
+//   const { name, age, email } = req.body;
+//   const { id } = req.params;
+//   try {
+//     const result = await getUsersCollection().updateOne(
+//       { _id: new ObjectId(id) },
+//       { $set: { name, age, email } }
+//     );
+//     if (result.modifiedCount > 0) {
+//       res.json({ message: 'User updated' });
+//     } else {
+//       res.status(404).json({ message: 'User not found or not modified' });
+//     }
+//   } catch (err) {
+//     console.error('❌ Update Error:', err);
+//     res.status(500).json({ error: 'Update failed' });
+//   }
+// });
+
+// Delete (DELETE)
+// app.delete('/api/users/:id', async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const result = await getUsersCollection().deleteOne({ _id: new ObjectId(id) });
+//     if (result.deletedCount > 0) {
+//       res.json({ message: 'User deleted' });
+//     } else {
+//       res.status(404).json({ message: 'User not found' });
+//     }
+//   } catch (err) {
+//     console.error('❌ Delete Error:', err);
+//     res.status(500).json({ error: 'Delete failed' });
+//   }
+// });
 app.put('/api/users/:id', async (req, res) => {
-  const { name, age, email } = req.body;
+  const { name, age, email, secret } = req.body;
   const { id } = req.params;
+
+  // Secret key validation
+  if (secret !== SECRET_KEY) {
+    return res.status(403).json({ error: 'Unauthorized: Invalid secret key' });
+  }
+
   try {
     const result = await getUsersCollection().updateOne(
       { _id: new ObjectId(id) },
@@ -293,9 +333,16 @@ app.put('/api/users/:id', async (req, res) => {
   }
 });
 
-// Delete (DELETE)
+// Delete (DELETE) with secret key check
 app.delete('/api/users/:id', async (req, res) => {
   const { id } = req.params;
+  const secret = req.headers['x-secret-key']; // Example: secret passed in header
+
+  // Secret key validation
+  if (secret !== SECRET_KEY) {
+    return res.status(403).json({ error: 'Unauthorized: Invalid secret key' });
+  }
+
   try {
     const result = await getUsersCollection().deleteOne({ _id: new ObjectId(id) });
     if (result.deletedCount > 0) {
@@ -308,7 +355,6 @@ app.delete('/api/users/:id', async (req, res) => {
     res.status(500).json({ error: 'Delete failed' });
   }
 });
-
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
