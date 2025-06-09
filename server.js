@@ -172,9 +172,6 @@ await connectDB();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
 
 // Create (POST)
 app.post('/api/users', async (req, res) => {
@@ -187,10 +184,17 @@ app.post('/api/users', async (req, res) => {
     res.status(500).json({ error: 'Insert failed' });
   }
 });
+app.get('/api', (req, res) => {
+  
+  console.log('➡ Serving index.html');
+  
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // Read All (GET)
 app.get('/api/users', async (req, res) => {
   try {
+    
     const users = await getUsersCollection().find().toArray();
     res.json(users);
   } catch (err) {
