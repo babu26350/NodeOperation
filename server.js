@@ -164,7 +164,7 @@ import { connectDB, getUsersCollection, ObjectId } from './db1.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
-
+const SECRET_KEY = process.env.SECRET_KEY;
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -178,8 +178,25 @@ const __dirname = path.dirname(__filename);
 
 
 // Create (POST)
+// app.post('/api/users', async (req, res) => {
+//   const { name, age, email } = req.body;
+//   try {
+//     const result = await getUsersCollection().insertOne({ name, age, email });
+//     res.status(201).json({ message: 'User added', id: result.insertedId });
+//   } catch (err) {
+//     console.error('❌ Insert Error:', err);
+//     res.status(500).json({ error: 'Insert failed' });
+//   }
+// });
+
 app.post('/api/users', async (req, res) => {
-  const { name, age, email } = req.body;
+  const { name, age, email, secret } = req.body; // 🔐 secret key body me hona chahiye
+  const expectedSecret = process.env.SECRET_KEY;
+
+  if (!secret || secret !== expectedSecret) {
+    return res.status(403).json({ error: 'Unauthorized: Invalid secret key' });
+  }
+
   try {
     const result = await getUsersCollection().insertOne({ name, age, email });
     res.status(201).json({ message: 'User added', id: result.insertedId });
