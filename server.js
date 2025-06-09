@@ -4,7 +4,7 @@
 // //import {insertUser, getUserByName } from './db1.js';
 // import { connectDB, getUsersCollection } from './db1.js';
 // const app = express();
-// app.use(cors());
+ //app.use(cors());
 // app.use(express.json());
 // app.use(express.static('public'));
 
@@ -165,11 +165,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+//app.use(express.static(path.join(__dirname, 'public')));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 await connectDB();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

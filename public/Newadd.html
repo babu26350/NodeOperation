@@ -28,7 +28,7 @@
         email: form.email.value,
         age: parseInt(form.age.value),
       };
-      const res = await fetch("/api/users2", {
+      const res = await fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -40,7 +40,7 @@
 
     async function getUser() {
       const name = document.getElementById("searchName").value;
-      const res = await fetch(`/api/users2/${encodeURIComponent(name)}`);
+      const res = await fetch(`/api/users/${encodeURIComponent(name)}`);
       const data = await res.json();
       document.getElementById("result").textContent = JSON.stringify(data, null, 2);
     }
