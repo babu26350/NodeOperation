@@ -38,7 +38,8 @@
 
 // export { insertUser, getUserByName };
 // db.js
-import { MongoClient } from 'mongodb';
+//import { MongoClient, } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 //const uri = 'mongodb://babulal:667031c0f5706f13c9c89042@ac-0zdxixf-shard-00-00.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-01.bslfstu.mongodb.net:27017,ac-0zdxixf-shard-00-02.bslfstu.mongodb.net:27017/?ssl=true&replicaSet=atlas-9gamx9-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster0';
 const uri = process.env.MONGO_URI;
@@ -61,3 +62,4 @@ export function getUsersCollection() {
   }
   return db.collection('users');
 }
+export { ObjectId };

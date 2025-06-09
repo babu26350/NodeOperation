@@ -159,7 +159,9 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { connectDB, getUsersCollection } from './db1.js';
+//import { connectDB, getUsersCollection } from './db1.js';
+import { connectDB, getUsersCollection, ObjectId } from './db1.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -219,6 +221,41 @@ app.get('/api/users/:name', async (req, res) => {
   }
 });
 
+// Update (PUT)
+// app.put('/api/users/:id', async (req, res) => {
+//   const { name, age, email } = req.body;
+//   const { id } = req.params;
+//   try {
+//     const result = await getUsersCollection().updateOne(
+//       { _id: new ObjectId(id) },
+//       { $set: { name, age, email } }
+//     );
+//     if (result.modifiedCount > 0) {
+//       res.json({ message: 'User updated' });
+//     } else {
+//       res.status(404).json({ message: 'User not found or not modified' });
+//     }
+//   } catch (err) {
+//     console.error('❌ Update Error:', err);
+//     res.status(500).json({ error: 'Update failed' });
+//   }
+// });
+
+// Delete (DELETE)
+// app.delete('/api/users/:id', async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const result = await getUsersCollection().deleteOne({ _id: new ObjectId(id) });
+//     if (result.deletedCount > 0) {
+//       res.json({ message: 'User deleted' });
+//     } else {
+//       res.status(404).json({ message: 'User not found' });
+//     }
+//   } catch (err) {
+//     console.error('❌ Delete Error:', err);
+//     res.status(500).json({ error: 'Delete failed' });
+//   }
+// });
 // Update (PUT)
 app.put('/api/users/:id', async (req, res) => {
   const { name, age, email } = req.body;
